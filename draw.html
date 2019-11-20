@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>webgl</title>
+</head>
+<body>
+    <canvas id="c" width="500" height="500"></canvas>
+</body>
+
+<script id="2d-vertex-shader" type="notjs">
+    attribute vec4 a_position;
+    attribute float a_pointSize;
+    
+    void main() {
+        gl_Position = a_position;
+        gl_PointSize = a_pointSize;
+    }
+</script>
+<script id="2d-fragment-shader" type="notjs">
+    precision mediump float;
+    uniform vec4 u_fragColor;
+
+    void main() {
+        gl_FragColor = u_fragColor;
+    }
+</script>
+<script src="resources/webgl-utils.js"></script>
+<script>
+    const canvas = document.getElementById('c');
+    const gl = canvas.getContext('webgl');
+
+    const program = webglUtils.createProgramFromScripts(gl, ["2d-vertex-shader", "2d-fragment-shader"]);
+    gl.useProgram(program);
+
+    const a_Position = gl.getAttribLocation(program, "a_position");
+    const a_pointSize = gl.getAttribLocation(program, 'a_pointSize');
+
+    const u_fragColor = gl.getUniformLocation(program, 'u_fragColor');
+
+    const g_points = [];
+    const g_colors = [];
+    canvas.onmousedown = (ev) => {
+        const x = ev.clientX;
+        const y = ev.clientY;
+        const rect = ev.target.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+
+        // 浏览器客户区坐标系转换至webgl坐标系，webgl坐标系区间是 -1 到 1
+        // page51
+        const pointX = (x - width / 2) / (width / 2);
+        const pointY = (height / 2 - y) / (height / 2);
+
+        g_points.push([pointX, pointY]);
+
+        if (pointX >= 0.0 && pointY >= 0.0) {
+            g_colors.push([1.0, 0.0, 0.0, 1.0]);
+        } else if (pointX < 0.0 && pointY < 0.0) {
+            g_colors.push([0.0, 1.0, 0.0, 1.0]);
+        } else {
+            g_colors.push([1.0, 1.0, 1.0, 1.0]);
+        }
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        for(let i = 0; i < g_points.length; i++) {
+            const xy = g_points[i];
+            const rgba = g_colors[i];
+            gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
+            gl.uniform4f(u_fragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+            gl.drawArrays(gl.POINTS, 0, 1);
+        }
+    }
+
+    gl.vertexAttrib1f(a_pointSize, 8);
+
+    gl.clearColor(0.0, 0.0, 0.0, 1);  // 设置颜色缓冲区默认值
+    gl.clear(gl.COLOR_BUFFER_BIT);   //  用颜色默认值绘制canvas背景色
+</script>
+</html>
