@@ -29,6 +29,7 @@
 </script>
 <script src="resources/webgl-utils.js"></script>
 <script>
+    // canvas点击显示point
     const canvas = document.getElementById('c');
     const gl = canvas.getContext('webgl');
 
@@ -73,6 +74,13 @@
             gl.uniform4f(u_fragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
             gl.drawArrays(gl.POINTS, 0, 1);
         }
+        // const vertex = new Float32Array(g_points);
+        // const vertexBuffer = gl.createBuffer();
+        // gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        // gl.bufferData(gl.ARRAY_BUFFER, vertex, gl.STATIC_DRAW);
+        // gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+        // gl.enableVertexAttribArray(a_Position);
+        // gl.drawArrays(gl.POINTS, 0, g_points.length / 2);
     }
 
     gl.vertexAttrib1f(a_pointSize, 8);
@@ -80,4 +88,4 @@
     gl.clearColor(0.0, 0.0, 0.0, 1);  // 设置颜色缓冲区默认值
     gl.clear(gl.COLOR_BUFFER_BIT);   //  用颜色默认值绘制canvas背景色
 </script>
-</html>
+</html> 

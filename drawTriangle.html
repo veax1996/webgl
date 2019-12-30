@@ -45,7 +45,7 @@
     const vertex = new Float32Array([
         0.0, 0.0,
         0.5, 0,
-        0, 0.5 
+        0, 0.5,
     ]);
 
     const vertexBuffer = gl.createBuffer();
@@ -58,6 +58,6 @@
     gl.clearColor(0.0, 0.0, 0.0, 1);  // 设置颜色缓冲区默认值
     gl.clear(gl.COLOR_BUFFER_BIT);   //  用颜色默认值绘制canvas背景色
 
-    gl.drawArrays(gl.POINTS, 1, 2);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
 </script>
 </html>
