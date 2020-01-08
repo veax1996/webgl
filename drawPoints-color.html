@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>webgl</title>
+</head>
+<body>
+    <canvas id="c" width="500" height="500"></canvas>
+</body>
+
+<script id="2d-vertex-shader" type="notjs">
+    attribute vec4 a_position;
+    attribute float a_pointSize;
+    attribute vec4 a_color;
+    varying vec4 v_color;
+    
+    void main() {
+        gl_Position = a_position;
+        gl_PointSize = a_pointSize;
+        v_color = a_color;
+    }
+</script>
+<script id="2d-fragment-shader" type="notjs">
+    precision mediump float;
+    varying vec4 v_color;
+
+    void main() {
+        gl_FragColor = v_color;
+    }
+</script>
+<script src="resources/webgl-utils.js"></script>
+<script>
+    const canvas = document.getElementById('c');
+    const gl = canvas.getContext('webgl');
+
+    const program = webglUtils.createProgramFromScripts(gl, ["2d-vertex-shader", "2d-fragment-shader"]);
+    gl.useProgram(program);
+
+    const a_Position = gl.getAttribLocation(program, "a_position");
+    const a_pointSize = gl.getAttribLocation(program, 'a_pointSize');
+    const a_color = gl.getAttribLocation(program, 'a_color');
+
+    const vertex = new Float32Array([
+        0.0, 0.0, 10.0, 1.0, 0.0, 0.0,
+        0.5, 0, 20.0, 0.0, 1.0, 0.0,
+        0, 0.5, 30.0, 0.0, 0.0, 1.0
+    ]);
+
+    const vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertex, gl.STATIC_DRAW);
+
+    const SIZE = vertex.BYTES_PER_ELEMENT;
+
+    // 2表示 2个2个的取值
+    // SIZE * 3 表示 一个顶点三个SIZE的数据
+    // 0 表示offset，从第一个开始取
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, SIZE * 6, 0);  // 连上缓冲区
+    gl.enableVertexAttribArray(a_Position);                         // 开启属性传入顶点着色器
+
+    gl.vertexAttribPointer(a_pointSize, 1, gl.FLOAT, false, SIZE * 6, SIZE * 2);  // 连上缓冲区
+    gl.enableVertexAttribArray(a_pointSize);                                // 开启属性传入顶点着色器
+
+    gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, SIZE * 6, SIZE * 3);  // 连上缓冲区
+    gl.enableVertexAttribArray(a_color);                                // 开启属性传入顶点着色器        
+
+    gl.clearColor(0.0, 0.0, 0.0, 1);  // 设置颜色缓冲区默认值
+    gl.clear(gl.COLOR_BUFFER_BIT);   //  用颜色默认值绘制canvas背景色
+
+    // 这里换成TRIANGLES再看看
+    gl.drawArrays(gl.POINTS, 0, 3);
+</script>
+</html>
