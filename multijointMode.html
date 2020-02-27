@@ -30,7 +30,7 @@
     '  gl_Position = u_MvpMatrix * a_Position;\n' +
     // Shading calculation to make the arm look three-dimensional
     '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
-    '  vec4 color = vec4(1.0, 1.0, 1.0, 1.0);\n' + // Robot color
+    '  vec4 color = vec4(1.0, 0.8, 0.9, 0.9);\n' + // Robot color
     '  vec3 normal = normalize((u_NormalMatrix * a_Normal).xyz);\n' +
     '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
     '  v_Color = vec4(color.rgb * nDotL + vec3(0.1), color.a);\n' +
@@ -81,8 +81,8 @@
   }
 
   var ANGLE_STEP = 3.0; // The increments of rotation angle (degrees)
-  var g_arm1Angle = 90.0; // The rotation angle of arm1 (degrees)
-  var g_joint1Angle = 45.0; // The rotation angle of joint1 (degrees)
+  var g_arm1Angle = 0.0; // The rotation angle of arm1 (degrees)
+  var g_joint1Angle = .0; // The rotation angle of joint1 (degrees)
   var g_joint2Angle = 0.0; // The rotation angle of joint2 (degrees)
   var g_joint3Angle = 0.0; // The rotation angle of joint3 (degrees)
 
@@ -212,7 +212,7 @@
     var arm2Length = 10.0;
     g_modelMatrix.translate(0.0, arm1Length, 0.0); // Move to joint1
     g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0); // Rotate around the z-axis
-    drawBox(gl, n, 4.0, arm2Length, 4.0, viewProjMatrix, u_MvpMatrix, u_NormalMatrix); // Draw
+    drawBox(gl, n, 8.0, arm2Length, 8.0, viewProjMatrix, u_MvpMatrix, u_NormalMatrix); // Draw
 
     // A palm
     var palmLength = 2.0;
